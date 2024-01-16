@@ -4,9 +4,10 @@
 {% block hederclass %}class="header--main-page"{% endblock hederclass %}
 
 {% block nav %}
-  {% if user.is_authenticated %}
-    <li><a href="form.html" class="btn btn--without-border">Przekaż dary</a></li>
-  {% endif %}
+{#TODO po zrobieniu autoryzacji użytkowników dodać if#}
+{#  {% if user.is_authenticated %}#}
+    <li><a href="{% url 'add-donation' %}" class="btn btn--without-border">Przekaż dary</a></li>
+{#  {% endif %}#}
 {% endblock nav %}
 
 {% block header %}
@@ -64,7 +65,7 @@
         </div>
       </div>
 
-      <a href="#" class="btn btn--large">Załóż konto</a>
+      <a href="{% url 'register' %}" class="btn btn--large">Załóż konto</a>
     </section>
 
     <section id="about-us" class="about-us">

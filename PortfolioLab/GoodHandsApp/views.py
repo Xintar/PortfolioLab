@@ -1,9 +1,17 @@
 from django.shortcuts import render
+from django.views import View
 from django.views.generic import TemplateView
 
+from .models import Institution
 
-class LandingPageView(TemplateView):
-    template_name = 'index.html'
+
+class LandingPageView(View):
+    def get(self, request):
+        institutions = Institution.objects.all()
+        ctx = {
+            'institutions': institutions,
+        }
+        return render(request, 'index.html', ctx)
 
 
 class AddDonationView(TemplateView):

@@ -17,6 +17,19 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from GoodHandsApp.views import (
+    LandingPageView,
+    AddDonationView,
+    LoginPageView,
+    RegisterPageView,
+
+)
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', LandingPageView.as_view(), name='landing'),
+    path('add-donation/', AddDonationView.as_view(), name='add-donation'),
+    path('login/', LoginPageView.as_view(), name='login'),
+    path('register/', RegisterPageView.as_view(), name='register'),
+
 ]

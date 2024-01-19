@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views import View
 from django.views.generic import TemplateView
 
-from .models import Institution
+from .models import Institution, Category
 
 
 class LandingPageView(View):

@@ -110,10 +110,10 @@ class Donation(models.Model):
         max_length=20,
         verbose_name="Kod pocztowy"
     )
-    pick_up_date = models.DateTimeField(
+    pick_up_date = models.DateField(
         verbose_name="Data odbioru"
     )
-    pick_up_time = models.DateTimeField(
+    pick_up_time = models.TimeField(
         verbose_name="Czas odbioru"
     )
     pick_up_comment = models.TextField(

@@ -1,49 +1,46 @@
 from faker import Factory
 
-from exercises_app.models import (
-    Student, SchoolSubject as Subject,
-    SCHOOL_CLASS, StudentGrades, GRADES
+from GoodHandsApp.models import (
+    Category,
+    Institution,
+    Donation
 )
 from random import randint
 
 
-def create_name():
-    fake = Factory.create("en_US")
-    first_name = fake.first_name()
-    last_name = fake.last_name()
-    return first_name, last_name
+CATEGORIES = (
+    "ubrania",
+    "jedzenie",
+    "sprzęt AGD",
+    "meble",
+    "zabawki",
+    "ciepłe koce"
+)
 
 
-def create_students():
-    for school_class_key, _ in SCHOOL_CLASS:
-        for kid in range(0, 20):
-            first_name, last_name = create_name()
-            Student.objects.create(first_name=first_name,
-                                   last_name=last_name,
-                                   school_class=school_class_key)
+def create_category():
+
+    for categori in CATEGORIES:
+        Category.objects.create(name=categori)
 
 
-def create_subjects():
-    Subject.objects.create(name="English", teacher_name=" ".join(create_name()))
-    Subject.objects.create(name="Basic Math", teacher_name=" ".join(create_name()))
-    Subject.objects.create(name="French", teacher_name=" ".join(create_name()))
-    Subject.objects.create(name="Physical Science", teacher_name=" ".join(create_name()))
-    Subject.objects.create(name="Physical Education", teacher_name=" ".join(create_name()))
-    Subject.objects.create(name="Woodshop", teacher_name=" ".join(create_name()))
-    Subject.objects.create(name="Biology", teacher_name=" ".join(create_name()))
-    Subject.objects.create(name="Chemistry", teacher_name=" ".join(create_name()))
-    Subject.objects.create(name="Geography", teacher_name=" ".join(create_name()))
+def create_institution():
+    fake = Factory.create("pl_PL")
 
+    for _ in range(5):
+        for institution in range(1, 4):
+            i = Institution.objects.create(
+                name=(Institution.TYPE_CHOICES[institution - 1][1]).capitalize(),
+                description=fake.sentence(),
+                type=institution,
+            )
 
-def create_grades():
-    for student in Student.objects.all():  # dla każdego ucznia
-        for subject in Subject.objects.all():  # dla każdego przedmiotu
-            grade_cnt = randint(0, 7)  # liczba ocen do wygenerowania
-            for _ in range(grade_cnt):  # generowanie kolejnych ocen
-                idx = randint(0, len(GRADES)-1)
-                grade = GRADES[idx][0]
-                StudentGrades.objects.create(
-                    student=student,
-                    school_subject=subject,
-                    grade=grade
-                )
+            cat = []
+            for _ in range(randint(1, Category.objects.all().count())):
+                cat.append(randint(1, Category.objects.all().count()))
+
+            cat = list(set(cat))
+
+            for category in cat:
+                c = Category.objects.get(name=CATEGORIES[category - 1])
+                i.categories.add(c)

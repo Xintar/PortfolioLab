@@ -1,8 +1,10 @@
+from django.contrib.auth import authenticate, login, logout
 from django.db.models import Sum
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import TemplateView
 
+from .forms import LoginForm
 from .models import Institution, Donation
 
 
@@ -28,8 +30,44 @@ class AddDonationView(TemplateView):
     template_name = 'form.html'
 
 
-class LoginPageView(TemplateView):
-    template_name = 'login.html'
+class LoginPageView(View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            return redirect('landing')
+        else:
+            form = LoginForm()
+            return render(request, 'login.html', {'form': form})
+
+    def post(self, request):
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            user = authenticate(
+                email=form.cleaned_data['email'],
+                password=form.cleaned_data['password']
+            )
+            if user is not None:
+                login(request, user)
+                return redirect('landing')
+            else:
+                form = LoginForm()
+                ctx = {
+                    'form': form,
+                    'comment': "Błędne dane logowania"
+                }
+                return render(request, 'login.html', ctx)
+        else:
+            form = LoginForm()
+            ctx = {
+                'form': form,
+                'comment': "Błędne dane logowania"
+            }
+            return render(request, 'login.html', ctx)
+
+
+class LogoutView(View):
+    def get(self, request):
+        logout(request)
+        return redirect('landing')
 
 
 class RegisterPageView(TemplateView):

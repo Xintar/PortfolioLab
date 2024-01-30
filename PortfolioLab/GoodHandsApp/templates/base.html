@@ -31,7 +31,9 @@
                     <li><a href="{% url 'landing' %}#steps" class="btn btn--without-border">O co chodzi?</a></li>
                     <li><a href="{% url 'landing' %}#about-us" class="btn btn--without-border">O nas</a></li>
                     <li><a href="{% url 'landing' %}#help" class="btn btn--without-border">Fundacje i organizacje</a></li>
-                    {% block nav %} {% endblock nav %}
+                    {% if user.is_authenticated %}
+                        <li><a href="{% url 'add-donation' %}#form-donation" class="btn btn--without-border">Przekaż dary</a></li>
+                    {% endif %}
                     <li><a href="#contact" class="btn btn--without-border">Kontakt</a></li>
                 </ul>
             </nav>

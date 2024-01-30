@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import TemplateView
 
-from .forms import LoginForm
+from .forms import LoginForm, UserForm
 from .models import Institution, Donation
 
 
@@ -49,12 +49,10 @@ class LoginPageView(View):
                 login(request, user)
                 return redirect('landing')
             else:
-                form = LoginForm()
-                ctx = {
-                    'form': form,
-                    'comment': "Błędne dane logowania"
-                }
-                return render(request, 'login.html', ctx)
+                comment = "Brak użytkownika w bazie, zarejestruj się."
+                return redirect('register')
+                # TODO ustawić z przekierowanie z komentarzem
+                # return redirect('register', comment=comment)
         else:
             form = LoginForm()
             ctx = {
@@ -70,5 +68,29 @@ class LogoutView(View):
         return redirect('landing')
 
 
-class RegisterPageView(TemplateView):
-    template_name = 'register.html'
+class RegisterPageView(View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            return redirect('landing')
+        else:
+            comment = request.GET.get('comment', '')
+            form = UserForm()
+            ctx = {
+                'comment': comment,
+                'form': form,
+            }
+            return render(request, 'register.html', ctx)
+
+    def post(self, request):
+        form = UserForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('landing')
+        else:
+            form = UserForm()
+            ctx = {
+                'form': form,
+                'comment': "Błąd rejestracji",
+            }
+            return render(request, 'login.html', ctx)

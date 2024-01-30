@@ -49,12 +49,10 @@ class LoginPageView(View):
                 login(request, user)
                 return redirect('landing')
             else:
-                form = LoginForm()
-                ctx = {
-                    'form': form,
-                    'comment': "Błędne dane logowania"
-                }
-                return render(request, 'login.html', ctx)
+                comment = "Brak użytkownika w bazie, zarejestruj się."
+                return redirect('register')
+                # TODO ustawić z przekierowanie z komentarzem
+                # return redirect('register', comment=comment)
         else:
             form = LoginForm()
             ctx = {
@@ -75,8 +73,13 @@ class RegisterPageView(View):
         if request.user.is_authenticated:
             return redirect('landing')
         else:
+            comment = request.GET.get('comment', '')
             form = UserForm()
-            return render(request, 'register.html', {'form': form})
+            ctx = {
+                'comment': comment,
+                'form': form,
+            }
+            return render(request, 'register.html', ctx)
 
     def post(self, request):
         form = UserForm(request.POST)
@@ -88,6 +91,6 @@ class RegisterPageView(View):
             form = UserForm()
             ctx = {
                 'form': form,
-                'comment': "Błąd rejestracji"
+                'comment': "Błąd rejestracji",
             }
             return render(request, 'login.html', ctx)

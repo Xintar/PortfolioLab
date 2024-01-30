@@ -1,7 +1,4 @@
-import datetime
-
 from django import forms
-from django.core.validators import EmailValidator
 from django.forms import ModelForm
 
 from GoodHandsApp.models import User

@@ -34,8 +34,10 @@ class AddDonationView(View):
     def get(self, request):
         if request.user.is_authenticated:
             categories = Category.objects.all()
+            institutions = Institution.objects.all()
             ctx = {
-                'categories': categories
+                'categories': categories,
+                'institutions': institutions
             }
             return render(request, self.template_name, ctx)
         else:

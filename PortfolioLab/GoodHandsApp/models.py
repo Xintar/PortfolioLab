@@ -5,7 +5,6 @@ from django.contrib.auth.models import (
 from django.contrib.auth.hashers import make_password
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from django.apps.registry import apps
 
 from PortfolioLab import settings
 
@@ -41,6 +40,7 @@ class UserManager(DjangoUserManager):
 
 
 class User(AbstractUser):
+    username = None
     email = models.EmailField(_('email address'), unique=True)
 
     objects = UserManager()
@@ -110,10 +110,10 @@ class Donation(models.Model):
         max_length=20,
         verbose_name="Kod pocztowy"
     )
-    pick_up_date = models.DateTimeField(
+    pick_up_date = models.DateField(
         verbose_name="Data odbioru"
     )
-    pick_up_time = models.DateTimeField(
+    pick_up_time = models.TimeField(
         verbose_name="Czas odbioru"
     )
     pick_up_comment = models.TextField(

@@ -5,10 +5,12 @@ from django.views import View
 from django.views.generic import TemplateView
 
 from .forms import LoginForm, UserForm
-from .models import Institution, Donation
+from .models import Institution, Donation, Category
 
 
 class LandingPageView(View):
+    template_name = "index.html"
+
     def get(self, request):
         institutions = Institution.objects.all()
         donations = Donation.objects.all()
@@ -23,20 +25,43 @@ class LandingPageView(View):
             'quality_donations': quality_donations_sum,
             'instytution_donation': instytution_donation,
         }
-        return render(request, 'index.html', ctx)
+        return render(request, self.template_name, ctx)
 
 
-class AddDonationView(TemplateView):
+class AddDonationView(View):
     template_name = 'form.html'
+
+    def get(self, request):
+        if request.user.is_authenticated:
+            categories = Category.objects.all()
+            institutions = Institution.objects.all()
+            ctx = {
+                'categories': categories,
+                'institutions': institutions
+            }
+            return render(request, self.template_name, ctx)
+        else:
+            return redirect('login')
+
+    def post(self, request):
+        if request.user.is_authenticated:
+            ctx = {
+
+            }
+            return render(request, self.template_name, ctx)
+        else:
+            return redirect('login')
 
 
 class LoginPageView(View):
+    template_name = 'login.html'
+
     def get(self, request):
         if request.user.is_authenticated:
             return redirect('landing')
         else:
             form = LoginForm()
-            return render(request, 'login.html', {'form': form})
+            return render(request, self.template_name, {'form': form})
 
     def post(self, request):
         form = LoginForm(request.POST)
@@ -59,7 +84,7 @@ class LoginPageView(View):
                 'form': form,
                 'comment': "Błędne dane logowania"
             }
-            return render(request, 'login.html', ctx)
+            return render(request, self.template_name, ctx)
 
 
 class LogoutView(View):
@@ -69,6 +94,8 @@ class LogoutView(View):
 
 
 class RegisterPageView(View):
+    template_name = 'register.html'
+
     def get(self, request):
         if request.user.is_authenticated:
             return redirect('landing')
@@ -79,7 +106,7 @@ class RegisterPageView(View):
                 'comment': comment,
                 'form': form,
             }
-            return render(request, 'register.html', ctx)
+            return render(request, self.template_name, ctx)
 
     def post(self, request):
         form = UserForm(request.POST)

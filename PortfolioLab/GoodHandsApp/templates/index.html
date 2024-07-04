@@ -3,12 +3,6 @@
 
 {% block hederclass %}class="header--main-page"{% endblock hederclass %}
 
-{% block nav %}
-    {% if user.is_authenticated %}
-        <li><a href="{% url 'add-donation' %}" class="btn btn--without-border">Przekaż dary</a></li>
-    {% endif %}
-{% endblock nav %}
-
 {% block header %}
     <div class="slogan container container--90">
         <div class="slogan--item">

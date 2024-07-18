@@ -3,7 +3,6 @@ from faker import Factory
 from GoodHandsApp.models import (
     Category,
     Institution,
-    Donation
 )
 from random import randint
 
@@ -26,11 +25,20 @@ def create_category():
 
 def create_institution():
     fake = Factory.create("pl_PL")
-
-    for _ in range(5):
+    
+    numer_institution_to_create =  int(input("Prosze podać ilość instytucji do utworzenia: "))
+    
+    for _ in range(numer_institution_to_create):
         for institution in range(1, 4):
+            if institution == 1:  # Fundacja
+                fake_name = f"im. {fake.name()}"
+            elif institution == 2:  # Organizacja pozarządowa
+                fake_name = f"\"{fake.word()}\""
+            else: # Zbiórka lokalna
+                fake_name = f"osiedle {fake.city()}"
+            
             i = Institution.objects.create(
-                name=(Institution.TYPE_CHOICES[institution - 1][1]).capitalize(),
+                name=(f"{Institution.TYPE_CHOICES[institution - 1][1]} {fake_name}").capitalize(),
                 description=fake.sentence(),
                 type=institution,
             )
